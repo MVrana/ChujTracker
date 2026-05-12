@@ -81,19 +81,13 @@ async function addPerson() {
         return;
     }
     
-    const password = getPassword();
-    if (!password) {
-        errorMsg.textContent = 'Heslo je povinné!';
-        return;
-    }
-    
     try {
         const response = await fetch('/api/people', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name: name, password: password })
+            body: JSON.stringify({ name: name })
         });
         
         if (response.ok) {
@@ -112,25 +106,17 @@ async function addPerson() {
 
 // Přidání bodu
 async function addPoint(personId) {
-    const password = getPassword();
-    if (!password) {
-        return;
-    }
-    
     try {
         const response = await fetch(`/api/people/${personId}/points`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ change: 1, password: password })
+            body: JSON.stringify({ change: 1 })
         });
         
         if (response.ok) {
             loadPeople();
-        } else {
-            const error = await response.json();
-            alert(error.error || 'Chyba při aktualizaci bodů');
         }
     } catch (error) {
         console.error('Chyba:', error);
@@ -139,25 +125,17 @@ async function addPoint(personId) {
 
 // Odstranění bodu
 async function removePoint(personId) {
-    const password = getPassword();
-    if (!password) {
-        return;
-    }
-    
     try {
         const response = await fetch(`/api/people/${personId}/points`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ change: -1, password: password })
+            body: JSON.stringify({ change: -1 })
         });
         
         if (response.ok) {
             loadPeople();
-        } else {
-            const error = await response.json();
-            alert(error.error || 'Chyba při aktualizaci bodů');
         }
     } catch (error) {
         console.error('Chyba:', error);
@@ -169,25 +147,14 @@ async function deletePerson(personId) {
     if (!confirm('Opravdu chceš smazat tohoto člověka?')) {
         return;
     }
-    const password = getPassword();
-    if (!password) {
-        return;
-    }
     
     try {
         const response = await fetch(`/api/people/${personId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ password: password })
+            method: 'DELETE'
         });
         
         if (response.ok) {
             loadPeople();
-        } else {
-            const error = await response.json();
-            alert(error.error || 'Chyba při mazání člověka');
         }
     } catch (error) {
         console.error('Chyba:', error);
@@ -204,8 +171,4 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, m => map[m]);
-}
-
-function getPassword() {
-    return prompt('Zadej heslo pro administraci:');
 }

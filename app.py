@@ -1,24 +1,18 @@
 from flask import Flask, render_template, request, jsonify
-from config_loader import load_config, get_flask_config, get_auth_config
+from config_loader import load_config, get_flask_config
 from database import (
     init_db, get_all_people, add_person, get_person,
     update_points, delete_person, person_exists
 )
 
-# Načti konfiguraci
+# Načti Flask konfiguraci
 config = load_config()
 flask_config = get_flask_config(config)
-auth_config = get_auth_config(config)
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Inicializace databáze
 init_db()
-
-def verify_password():
-    """Ověří heslo z requestu"""
-    password = request.json.get('password', '')
-    return password == auth_config['password']
 
 @app.route('/')
 def index():
@@ -34,9 +28,6 @@ def get_people():
 @app.route('/api/people', methods=['POST'])
 def add_person_route():
     """Přidá nového člověka"""
-    if not verify_password():
-        return jsonify({'error': 'Neplatné heslo'}), 401
-    
     person_name = request.json.get('name', '').strip()
     
     if not person_name:
@@ -55,9 +46,6 @@ def add_person_route():
 @app.route('/api/people/<int:person_id>/points', methods=['POST'])
 def update_person_points(person_id):
     """Aktualizuje body pro konkrétního člověka"""
-    if not verify_password():
-        return jsonify({'error': 'Neplatné heslo'}), 401
-    
     person = get_person(person_id)
     if not person:
         return jsonify({'error': 'Člověk nenalezen'}), 404
@@ -69,9 +57,6 @@ def update_person_points(person_id):
 @app.route('/api/people/<int:person_id>', methods=['DELETE'])
 def delete_person_route(person_id):
     """Smaže člověka"""
-    if not verify_password():
-        return jsonify({'error': 'Neplatné heslo'}), 401
-    
     success = delete_person(person_id)
     if success:
         return jsonify({'success': True})
