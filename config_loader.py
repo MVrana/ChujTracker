@@ -54,6 +54,17 @@ def get_flask_config(config):
         print(f"❌ Chyba při načítání Flask konfigurace: {e}")
         sys.exit(1)
 
+def get_auth_config(config):
+    """Vrátí konfiguraci autentifikace"""
+    try:
+        auth_config = {
+            'password': config.get('auth', 'password', fallback='admin'),
+        }
+        return auth_config
+    except Exception as e:
+        print(f"❌ Chyba při načítání autentifikační konfigurace: {e}")
+        sys.exit(1)
+
 def create_example_config():
     """Vytvoří příklad config souboru, pokud neexistuje"""
     if not os.path.exists(EXAMPLE_CONFIG_FILE):
@@ -70,6 +81,10 @@ database = chujtracker
 debug = true
 host = 127.0.0.1
 port = 5000
+
+[auth]
+# Jednoduchá autentifikace
+password = admin123
 """
         try:
             with open(EXAMPLE_CONFIG_FILE, 'w', encoding='utf-8') as f:
