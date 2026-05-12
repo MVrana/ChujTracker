@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChujTracker - Tracking bodů</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 ChujTracker</h1>
+            <p class="subtitle">Sleduj body svých přátel</p>
+            <button onclick="openAddPersonModal()" class="btn btn-primary btn-add-new">+ Přidat člověka</button>
+        </header>
+
+        <div class="people-section">
+            <h2>Lidé a jejich body</h2>
+            <div id="people-list" class="people-list">
+                <p class="loading">Načítám...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modální okno pro přidání člověka -->
+    <div id="addPersonModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddPersonModal()">&times;</span>
+            <h2>Přidat nového člověka</h2>
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="personInput" 
+                    placeholder="Zadej jméno..."
+                    autocomplete="off"
+                >
+            </div>
+            <div id="error-message" class="error-message"></div>
+            <div class="modal-buttons">
+                <button onclick="addPerson()" class="btn btn-primary">Přidat</button>
+                <button onclick="closeAddPersonModal()" class="btn btn-secondary">Zrušit</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
